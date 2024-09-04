@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversor de Moedas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Conversor de Moedas</h1>
+        <form id="converter-form">
+            <input type="number" name="amount" placeholder="Valor" required>
+            <input type="text" name="from_currency" placeholder="De (Ex: USD)" required>
+            <input type="text" name="to_currency" placeholder="Para (Ex: BRL)" required>
+            <button type="submit">Converter</button>
+        </form>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('converter-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            fetch('/convert', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.result) {
+                    document.getElementById('result').innerText = 'Resultado: ' + data.result;
+                } else {
+                    document.getElementById('result').innerText = 'Erro: ' + data.error;
+                }
+            })
+            .catch(error => {
+                document.getElementById('result').innerText = 'Erro: ' + error;
+            });
+        });
+    </script>
+</body>
+</html>
